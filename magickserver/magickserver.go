@@ -30,11 +30,13 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	getStarted := time.Now()
 	imgReponse, err := http.Get(imgURL)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Could not fetch image: %s", err), 400)
 		return
 	}
+	getDuration := time.Since(getStarted)
 
 	imgBytes, err := ioutil.ReadAll(imgReponse.Body)
 	if err != nil {
@@ -43,14 +45,15 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer imgReponse.Body.Close()
 
+	detectionStarted := time.Now()
 	_, imgFormat, err := image.DecodeConfig(bytes.NewReader(imgBytes))
 	if err != nil {
 		http.Error(w, fmt.Sprintf("could not detect image format: %s", err), 501)
 		return
 	}
-	fmt.Println("format: ", imgFormat)
+	detectionDuration := time.Since(detectionStarted)
 
-	now := time.Now()
+	resizeStarted := time.Now()
 	img, err := magick.NewFromBlob(imgBytes, imgFormat)
 	defer img.Destroy()
 	err = img.Resize(size)
@@ -64,16 +67,17 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("encoding failed: %s", err), 501)
 		return
 	}
-	duration := time.Since(now)
-	fmt.Println("Resize took ", duration)
+	resizeDuration := time.Since(resizeStarted)
+	fmt.Println("get=", getDuration, ", detection=", detectionDuration, ", resize=", resizeDuration)
 
 	w.Header().Set(contentType, fmt.Sprintf("image/%s", imgFormat))
-	w.Header().Set(xResize, fmt.Sprintf("%v", duration))
+	w.Header().Set(xTimings, fmt.Sprintf("get=%v, resize=%v", getDuration, resizeDuration))
+
 	w.Write(newImgBytes)
 }
 
 const contentType = "Content-Type"
-const xResize = "X-Resize"
+const xTimings = "X-Image-Timings"
 
 func main() {
 	http.HandleFunc("/img", imgHandler)
