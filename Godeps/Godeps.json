@@ -1,0 +1,13 @@
+{
+	"ImportPath": "github.com/mat/gomagick",
+	"GoVersion": "go1.5.1",
+	"Packages": [
+		"."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/mat/magick",
+			"Rev": "fb81118a0765e578347f9cb6b329023881f338b1"
+		}
+	]
+}
