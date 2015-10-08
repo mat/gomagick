@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/mat/magick"
@@ -68,7 +69,7 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	resizeDuration := time.Since(resizeStarted)
-	fmt.Println("get=", getDuration, ", detection=", detectionDuration, ", resize=", resizeDuration)
+	log.Println("get=", getDuration, ", detection=", detectionDuration, ", resize=", resizeDuration)
 
 	w.Header().Set(contentType, fmt.Sprintf("image/%s", imgFormat))
 	w.Header().Set(xTimings, fmt.Sprintf("get=%v, resize=%v", getDuration, resizeDuration))
@@ -81,5 +82,10 @@ const xTimings = "X-Image-Timings"
 
 func main() {
 	http.HandleFunc("/img", imgHandler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Println("cannot start, need a PORT")
+		os.Exit(1)
+	}
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
 }
