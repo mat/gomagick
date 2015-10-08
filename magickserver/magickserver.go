@@ -81,11 +81,13 @@ const contentType = "Content-Type"
 const xTimings = "X-Image-Timings"
 
 func main() {
+	log.Println("Starting server...")
 	http.HandleFunc("/img", imgHandler)
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Println("cannot start, need a PORT")
 		os.Exit(1)
 	}
+	log.Println("Server running on port", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
 }
