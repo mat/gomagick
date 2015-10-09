@@ -2,8 +2,9 @@
 
 Image resizing server written in Go based on ImageMagick, proof of concept.
 
-The service is deployed at <http://gomagick.herokuapp.com>
+See in action at <http://gomagick.herokuapp.com>
 
+Powered by ImageMagick bindings from <https://github.com/quirkey/magick>
 
 ## Usage
 
@@ -41,7 +42,9 @@ For example:
 	docker run -it -p 8080:8080 --name magickserver magickserver
 	open http://$(docker-machine ip default):8080
 
+## Thanks
 
+I started researching this during our student exchange between <https://www.xing.com> and <http://www.jimdo.com>. Thanks to both for letting me work on interesting things.
 
 ## License
 
