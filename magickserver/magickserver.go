@@ -19,7 +19,8 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", imgHandler)
+	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/img", imgHandler)
 
 	log.Println("Starting server...")
 	port := os.Getenv("PORT")
@@ -29,6 +30,10 @@ func main() {
 	}
 	log.Println("Server running on port", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
+}
+
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(indexHTML))
 }
 
 func imgHandler(w http.ResponseWriter, r *http.Request) {
@@ -127,3 +132,56 @@ type serverError struct {
 
 const contentType = "Content-Type"
 const xTimings = "X-Image-Timings"
+
+const indexHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>gomagick</title>
+</head>
+
+<body>
+
+<h1>gomagick</h1>
+<p>
+   Image resizing server written in Go based on ImageMagick, proof of concept.
+   <br/>
+   <a href="https://github.com/mat/gomagick">https://github.com/mat/gomagick</a>
+</p>
+
+<h2>Usage</h2>
+
+<pre>http://gomagick.herokuapp.com/img?<strong>url</strong>=...&<strong>size</strong>=500x500</pre>
+
+<h2>Examples</h2>
+
+<table>
+   <tr>
+      <th>size param</th>
+      <th></th>
+   </tr>
+   <tr>
+      <td>100%</td>
+      <td><img src="http://gomagick.herokuapp.com/img?size=100%25&amp;url=https://github.com/apple-touch-icon.png"></td>
+   </tr>
+   <tr>
+      <td>50%</td>
+      <td><img src="http://gomagick.herokuapp.com/img?size=50%25&amp;url=https://github.com/apple-touch-icon.png"></td>
+   </tr>
+   <tr>
+      <td>150%</td>
+      <td><img src="http://gomagick.herokuapp.com/img?size=150%25&amp;url=https://github.com/apple-touch-icon.png"></td>
+   </tr>
+   <tr>
+      <td>100x100</td>
+      <td><img src="http://gomagick.herokuapp.com/img?size=100x100&amp;url=https://github.com/apple-touch-icon.png"></td>
+   </tr>
+   <tr>
+      <td>100x200!</td>
+      <td><img src="http://gomagick.herokuapp.com/img?size=100x200!&amp;url=https://github.com/apple-touch-icon.png"></td>
+   </tr>
+</table>
+
+</body>
+</html>
+`

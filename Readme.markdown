@@ -7,10 +7,10 @@ The service is deployed at <http://gomagick.herokuapp.com>
 
 ## Usage
 
-Example: <http://gomagick.herokuapp.com/?size=100x100&url=https://github.com/apple-touch-icon.png>
+Example: <http://gomagick.herokuapp.com/img?size=100x100&url=https://github.com/apple-touch-icon.png>
 
 
-* Endpoint: <http://gomagick.herokuapp.com/>
+* Endpoint: <http://gomagick.herokuapp.com/img>
 * Params:
 	* `url`: http/https URL
 	* `size`: 64x64, 90%
@@ -21,7 +21,7 @@ Example: <http://gomagick.herokuapp.com/?size=100x100&url=https://github.com/app
 
 Every request returns the `X-Image-Timings` header containing performance metrics:
 
-	curl -I 'http://gomagick.herokuapp.com/?size=100x100&url=https://github.com/apple-touch-icon.png'
+	curl -I 'http://gomagick.herokuapp.com/img?size=100x100&url=https://github.com/apple-touch-icon.png'
 
 For example:
 
