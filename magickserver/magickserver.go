@@ -178,6 +178,14 @@ const indexHTML = `
       <td><img src="/img?size=100x100&amp;url=https://github.com/apple-touch-icon.png"></td>
    </tr>
    <tr>
+      <td>120x</td>
+      <td><img src="/img?size=120x&amp;url=https://github.com/apple-touch-icon.png"></td>
+   </tr>
+   <tr>
+      <td>x120</td>
+      <td><img src="/img?size=x120&amp;url=https://github.com/apple-touch-icon.png"></td>
+   </tr>
+   <tr>
       <td>100x200!</td>
       <td><img src="/img?size=100x200!&amp;url=https://github.com/apple-touch-icon.png"></td>
    </tr>
