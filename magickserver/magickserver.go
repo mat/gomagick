@@ -163,23 +163,23 @@ const indexHTML = `
    </tr>
    <tr>
       <td>100%</td>
-      <td><img src="http://gomagick.herokuapp.com/img?size=100%25&amp;url=https://github.com/apple-touch-icon.png"></td>
+      <td><img src="/img?size=100%25&amp;url=https://github.com/apple-touch-icon.png"></td>
    </tr>
    <tr>
       <td>50%</td>
-      <td><img src="http://gomagick.herokuapp.com/img?size=50%25&amp;url=https://github.com/apple-touch-icon.png"></td>
+      <td><img src="/img?size=50%25&amp;url=https://github.com/apple-touch-icon.png"></td>
    </tr>
    <tr>
       <td>150%</td>
-      <td><img src="http://gomagick.herokuapp.com/img?size=150%25&amp;url=https://github.com/apple-touch-icon.png"></td>
+      <td><img src="/img?size=150%25&amp;url=https://github.com/apple-touch-icon.png"></td>
    </tr>
    <tr>
       <td>100x100</td>
-      <td><img src="http://gomagick.herokuapp.com/img?size=100x100&amp;url=https://github.com/apple-touch-icon.png"></td>
+      <td><img src="/img?size=100x100&amp;url=https://github.com/apple-touch-icon.png"></td>
    </tr>
    <tr>
       <td>100x200!</td>
-      <td><img src="http://gomagick.herokuapp.com/img?size=100x200!&amp;url=https://github.com/apple-touch-icon.png"></td>
+      <td><img src="/img?size=100x200!&amp;url=https://github.com/apple-touch-icon.png"></td>
    </tr>
 </table>
 
