@@ -70,8 +70,8 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("url=\"%s\" size=%s get=%s resize=%s inbytes=%.1fkB outbytes=%.1fkB\n",
-		imgURL, size, getDuration, resizeDuration, float64(len(imgBytes))/1000.0, float64(len(newImgBytes))/1000.0)
+	log.Printf("url=\"%s\" size=%s get=%s resize=%s inbytes=%d outbytes=%d\n",
+		imgURL, size, getDuration, resizeDuration, len(imgBytes), len(newImgBytes))
 
 	w.Header().Set(contentType, fmt.Sprintf("image/%s", imgFormat))
 	w.Header().Set(xTimings, fmt.Sprintf("get=%v, resize=%v", getDuration, resizeDuration))
