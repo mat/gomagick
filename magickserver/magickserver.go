@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"time"
 
 	"github.com/mat/magick"
@@ -21,6 +22,7 @@ import (
 func main() {
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/img", imgHandler)
+	http.HandleFunc("/mozjpeg", mozjpegHandler)
 
 	log.Println("Starting server...")
 	port := os.Getenv("PORT")
@@ -77,6 +79,68 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(xTimings, fmt.Sprintf("get=%v, resize=%v", getDuration, resizeDuration))
 
 	w.Write(newImgBytes)
+}
+
+type mozjpegParams struct {
+	quality string
+}
+
+func mozjpegHandler(w http.ResponseWriter, r *http.Request) {
+	imgURL := r.FormValue("url")
+	if imgURL == "" {
+		http.Error(w, "missing parameter: url (to image)", 401)
+		return
+	}
+
+	getStarted := time.Now()
+	imgBytes, e := getImageData(imgURL)
+	getDuration := time.Since(getStarted)
+	if e != nil {
+		httpError(w, e)
+		return
+	}
+
+	imgFormat, e := detectFormat(imgBytes)
+	if e != nil {
+		httpError(w, e)
+		return
+	}
+
+	mozjpegStarted := time.Now()
+	newImgBytes, e := mozjpeg(imgBytes, mozjpegParams{quality: r.FormValue("quality")})
+	mozjpegDuration := time.Since(mozjpegStarted)
+	if e != nil {
+		httpError(w, e)
+		return
+	}
+
+	log.Printf("cjpeg url=\"%s\" get=%s mozjpeg=%s inbytes=%d outbytes=%d outratio=%.2f\n",
+		imgURL, getDuration, mozjpegDuration, len(imgBytes), len(newImgBytes), float64(len(newImgBytes))/float64(len(imgBytes)))
+
+	w.Header().Set(contentType, fmt.Sprintf("image/%s", imgFormat))
+	w.Header().Set(xTimings, fmt.Sprintf("get=%v, mozjpeg=%v", getDuration, mozjpegDuration))
+
+	w.Write(newImgBytes)
+}
+
+func mozjpeg(img []byte, params mozjpegParams) ([]byte, *serverError) {
+	args := []string{"-quality", params.quality}
+	cjpegPath := os.Getenv("CJPEG_PATH")
+	if cjpegPath == "" {
+		cjpegPath = "cjpeg"
+	}
+
+	cmd := exec.Command(cjpegPath, args...)
+	cmd.Stdin = bytes.NewReader(img)
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	var err bytes.Buffer
+	cmd.Stderr = &err
+	e := cmd.Run()
+	if e != nil {
+		return img, &serverError{fmt.Sprintf("mozjpeg failed: %s\n\n%s", e, err.String()), 501}
+	}
+	return out.Bytes(), nil
 }
 
 func getImageData(imgURL string) ([]byte, *serverError) {
